@@ -54,6 +54,7 @@ function App() {
             if (response.status === 404) throw new Error("Pagina No encontrada");
             const data = await response.json();
 			console.log(data);
+			getList(url);
         } catch (error) {
             console.log(error);
         }
@@ -61,18 +62,18 @@ function App() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		let item = [
+		let listUpdated = [
 			...toDoList,
 			{"label": input.current.value, "done": false}
 		];
 		console.log(input.current.value);
-		PushItemList('https://assets.breatheco.de/apis/fake/todos/user/vicdario', item)
+		PushItemList(url, listUpdated)
 	}
 
-	const deleteItem = (id) => {
-		/* let listUpdated = toDoList.filter(item => item.id !== id);
-		setList(listUpdated);
-		setNumber(numberElements-1); */
+	const deleteItem = (label) => {
+		let listUpdated = toDoList.filter(item => item.label !== label);
+		PushItemList(url, listUpdated)
+		getList(url);
 	}
 
 	return (
@@ -90,7 +91,7 @@ function App() {
 							!!toDoList ?
 							toDoList.map((item, key) => {
 								return <li id={item.id} className="list-group-item d-flex justify-content-between align-items-center" key={key}>
-									{item.label}<FontAwesomeIcon className="button-delete" onClick={()=>deleteItem(item.id)} id={key} icon={faTrashAlt} /></li>
+									{item.label}<FontAwesomeIcon className="button-delete" onClick={()=>deleteItem(item.label)} id={key} icon={faTrashAlt} /></li>
 							}) :
 							<li className="list-group-item">No tasks, add a task</li>
 						}

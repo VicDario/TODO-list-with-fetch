@@ -5,22 +5,24 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 function App() {
 	let [toDoList, setList] = useState([]);
+	let [numberElements, setNumber] = useState(0);
 
 	const addItem = (e) => {
 		if(e.code === "Enter"){
 			setList((prevState) =>{
 				return [...prevState, e.target.value];
 			})
+			setNumber(numberElements + 1);
 		}
 	}
 
 	const deleteItem = (e) => {
-		let id = e.target.parentElement.id;
-		let list = toDoList;
-		console.log(list);
-		list = list.slice(3, 1);
-		console.log(list);
-		setList(list);
+		let id;
+		if(e.target.id === '')	id = e.target.parentNode.id;
+		else id = e.target.id;
+		let element = document.getElementById(id);
+		element.parentNode.removeChild(element);
+		setNumber(numberElements - 1);
 	}
 
 	return (
@@ -33,11 +35,12 @@ function App() {
 						{
 							toDoList.length > 0 ?
 							toDoList.map((item, key) =>{
-								return <li id={key} className="list-group-item" key={key}>{item}<button className="button-delete" onClick={deleteItem}><FontAwesomeIcon icon={faTrashAlt} style={{opacity: "0.5"}} /></button></li>
+								return <li id={key} className="list-group-item d-flex justify-content-between align-items-center" key={key}>
+									{item}<button type="button" id={key} className="button-delete" onClick={deleteItem}><FontAwesomeIcon id={key} icon={faTrashAlt} /></button></li>
 							}) :
 							<li className="list-group-item">No tasks, add a task</li>
 						}
-						<li className="list-group-item shadows"><small className="text-muted">{toDoList.length} items left</small></li>
+						<li className="list-group-item shadows"><small className="text-muted">{numberElements} items left</small></li>
 					</ul>
 					
 				</div>

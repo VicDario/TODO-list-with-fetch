@@ -1,5 +1,5 @@
 import './App.css';
-import {useState} from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,19 +10,16 @@ function App() {
 	const addItem = (e) => {
 		if(e.code === "Enter"){
 			setList((prevState) =>{
-				return [...prevState, e.target.value];
+				return [...prevState,{id: numberElements, label: e.target.value}];
 			})
 			setNumber(numberElements + 1);
 		}
 	}
 
-	const deleteItem = (e) => {
-		let id;
-		if(e.target.id === '')	id = e.target.parentNode.id;
-		else id = e.target.id;
-		let element = document.getElementById(id);
-		element.parentNode.removeChild(element);
-		setNumber(numberElements - 1);
+	const deleteItem = (id) => {
+		let listUpdated = toDoList.filter(item => item.id !== id);
+		setList(listUpdated);
+		setNumber(numberElements-1);
 	}
 
 	return (
@@ -33,10 +30,10 @@ function App() {
 					<ul className="list-group">
 						<li className="list-group-item"><input className="px-4 py-3" type="text" onKeyPress={addItem} placeholder="What needs to be done?" /></li>
 						{
-							toDoList.length > 0 ?
+							numberElements > 0 ?
 							toDoList.map((item, key) =>{
-								return <li id={key} className="list-group-item d-flex justify-content-between align-items-center" key={key}>
-									{item}<button type="button" id={key} className="button-delete" onClick={deleteItem}><FontAwesomeIcon id={key} icon={faTrashAlt} /></button></li>
+								return <li id={item.id} className="list-group-item d-flex justify-content-between align-items-center" key={key}>
+									{item.label}<button type="button" className="button-delete" onClick={()=>deleteItem(item.id)}><FontAwesomeIcon id={key} icon={faTrashAlt} /></button></li>
 							}) :
 							<li className="list-group-item">No tasks, add a task</li>
 						}

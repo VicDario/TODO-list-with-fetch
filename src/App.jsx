@@ -15,18 +15,32 @@ function App() {
 		getList(url);
 	}, [])
 
-/* 	const createAPI = (url, options = {}) => {
+	const createAPI = (url) => {
 		fetch(url, {
 			method: 'POST', // or 'PUT'
 			body: JSON.stringify({}), // data can be `string` or {object}!
 			headers:{
 			  'Content-Type': 'application/json'
 			}
-		  }).then(res => res.json())
-		  .catch(error => console.error('Error:', error))
-		  .then(response => console.log('Success:', response));
-		  
-    } */
+		})
+			.then(res => res.json())
+			.catch(error => console.error('Error:', error))
+			.then(response => {
+				console.log('Success:', response);
+				getList(url);
+			});
+    }
+
+	const cleanAPI = (url) => {
+		fetch(url, {
+				method: 'DELETE', // or 'PUT'
+			}).then(res => res.json())
+				.catch(error => console.error('Error:', error))
+				.then(response => {
+					console.log('Success:', response)
+					createAPI(url);
+				});
+    }
 
 	const getList = async (url) => {
         try {
@@ -76,9 +90,10 @@ function App() {
 	}
 
 	const deleteAll = () => {
-		PushItemList(url, []);
-		getList(url);
+		cleanAPI(url);
 	}
+
+
 
 	return (
 		<div className="container my-5">
@@ -95,11 +110,16 @@ function App() {
 							!!toDoList ?
 							toDoList.map((item, key) => {
 								return <li id={item.id} className="list-group-item d-flex justify-content-between align-items-center" key={key}>
-									{item.label}<FontAwesomeIcon className="button-delete" onClick={()=>deleteItem(item.label)} id={key} icon={faTrashAlt} /></li>
+										{item.label}
+										<FontAwesomeIcon className="button-delete" onClick={()=>deleteItem(item.label)} id={key} icon={faTrashAlt} />
+										</li>
 							}) :
 							<li className="list-group-item">No tasks, add a task</li>
 						}
-						<li className="list-group-item shadows"><small className="text-muted">{numberElements} items left</small></li>
+						<li className="list-group-item shadows d-flex justify-content-between align-content-center">
+							<small className="text-muted">{numberElements} items left</small>
+							<button type="button" className="btn btn-danger" onClick={deleteAll}>Erase all</button>
+						</li>
 					</ul>
 				</div>
 			</div>

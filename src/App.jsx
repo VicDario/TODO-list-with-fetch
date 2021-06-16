@@ -15,7 +15,6 @@ function App() {
 		getList(url);
 	}, [])
 
-
 /* 	const createAPI = (url, options = {}) => {
 		fetch(url, {
 			method: 'POST', // or 'PUT'
@@ -38,7 +37,7 @@ function App() {
             if (response.status === 404) throw new Error("Pagina No encontrada");
             const data = await response.json();
         	setList([...data]);
-			setNumber(data.lenght);
+			setNumber(data.length);
         } catch (error) {
             console.log(error);
         }
@@ -72,7 +71,12 @@ function App() {
 
 	const deleteItem = (label) => {
 		let listUpdated = toDoList.filter(item => item.label !== label);
-		PushItemList(url, listUpdated)
+		PushItemList(url, listUpdated);
+		getList(url);
+	}
+
+	const deleteAll = () => {
+		PushItemList(url, []);
 		getList(url);
 	}
 
